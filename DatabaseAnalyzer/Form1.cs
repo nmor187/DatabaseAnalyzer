@@ -29,7 +29,11 @@ namespace DatabaseAnalyzer
         {
             // TODO: This line of code loads data into the 'testDatabaseDataSet.BOOK' table. You can move, or remove it, as needed.
             this.bOOKTableAdapter.Fill(this.testDatabaseDataSet.BOOK);
-
+            DataTable table = testDatabaseDataSet.Tables[0];
+            Console.WriteLine("columns count: " + table.Columns.Count);
+            Console.WriteLine("rows count: " + table.Rows.Count);
+            //MessageBox.Show(testDatabaseDataSet.Tables[0].Columns.Count);
+            //MessageBox.Show((testDatabaseDataSet.Tables[0].Rows[0][0].ToString()));
         }
     }
 }
