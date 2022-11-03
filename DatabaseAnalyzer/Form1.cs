@@ -29,11 +29,52 @@ namespace DatabaseAnalyzer
         {
             // TODO: This line of code loads data into the 'testDatabaseDataSet.BOOK' table. You can move, or remove it, as needed.
             this.bOOKTableAdapter.Fill(this.testDatabaseDataSet.BOOK);
+
+            //Store the first table in the database into a table variable
             DataTable table = testDatabaseDataSet.Tables[0];
-            Console.WriteLine("columns count: " + table.Columns.Count);
-            Console.WriteLine("rows count: " + table.Rows.Count);
-            //MessageBox.Show(testDatabaseDataSet.Tables[0].Columns.Count);
-            //MessageBox.Show((testDatabaseDataSet.Tables[0].Rows[0][0].ToString()));
+
+            //Number of columns and rows in table
+            int numCol = table.Columns.Count;
+            int numRow = table.Rows.Count;
+
+            //FIND CANDIDATE KEYS
+            //go through each column and see if the value in every row of that column is different
+            //potentially: store elements of a column in an array, then if element already exists in array, exit, its not a candidate key
+
+            //store values of each column an array
+            for (int i = 0; i < numCol; i++)
+            {
+                string[] rowItems = new string[numRow];
+                bool isCandidateKey = true;
+                for (int j = 0; j < numRow; j++)
+                {
+                    //Check if the item in this row is already in the array
+                    string currStr = table.Rows[j][i].ToString();
+                    if (rowItems.Contains(currStr) == true)
+                    {
+                        isCandidateKey = false;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine(table.Rows[j][i].ToString());
+                        rowItems[j] = currStr;
+                    }
+                }
+                if (isCandidateKey == true)
+                {
+                    MessageBox.Show("Column #" + i + " is a candidate key");
+                }
+            }
+
+            //FIND FUNCTIONAL DEPENDENCIES
+            //correlations between columns
+            //begin in first column and compare with second, if two items in the first are the same then the two items in the compared column must also be the same
+            //if not no functional dependency exists between the two columns
+            //NEED: to figure out a way to iterate through all the possible comparisons between data
+
+
+
         }
     }
 }
