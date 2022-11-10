@@ -33,9 +33,24 @@ namespace DatabaseAnalyzer
             //Store the first table in the database into a table variable
             DataTable table = testDatabaseDataSet.Tables[0];
 
+            //Call function to find candidate keys
+            findCandidateKey(table);
+
+            //FIND FUNCTIONAL DEPENDENCIES
+            //correlations between columns
+            //begin in first column and compare with second, if two items in the first are the same then the two items in the compared column must also be the same
+            //if not no functional dependency exists between the two columns
+            //NEED: to figure out a way to iterate through all the possible comparisons between data
+
+
+
+        }
+        private void findCandidateKey(DataTable t)
+        {
+
             //Number of columns and rows in table
-            int numCol = table.Columns.Count;
-            int numRow = table.Rows.Count;
+            int numCol = t.Columns.Count;
+            int numRow = t.Rows.Count;
 
             //FIND CANDIDATE KEYS
             //go through each column and see if the value in every row of that column is different
@@ -49,7 +64,7 @@ namespace DatabaseAnalyzer
                 for (int j = 0; j < numRow; j++)
                 {
                     //Check if the item in this row is already in the array
-                    string currStr = table.Rows[j][i].ToString();
+                    string currStr = t.Rows[j][i].ToString();
                     if (rowItems.Contains(currStr) == true)
                     {
                         isCandidateKey = false;
@@ -57,7 +72,7 @@ namespace DatabaseAnalyzer
                     }
                     else
                     {
-                        Console.WriteLine(table.Rows[j][i].ToString());
+                        Console.WriteLine(t.Rows[j][i].ToString());
                         rowItems[j] = currStr;
                     }
                 }
@@ -66,15 +81,6 @@ namespace DatabaseAnalyzer
                     MessageBox.Show("Column #" + i + " is a candidate key");
                 }
             }
-
-            //FIND FUNCTIONAL DEPENDENCIES
-            //correlations between columns
-            //begin in first column and compare with second, if two items in the first are the same then the two items in the compared column must also be the same
-            //if not no functional dependency exists between the two columns
-            //NEED: to figure out a way to iterate through all the possible comparisons between data
-
-
-
         }
     }
 }
