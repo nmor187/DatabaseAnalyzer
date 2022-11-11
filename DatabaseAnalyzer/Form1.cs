@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,24 +18,12 @@ namespace DatabaseAnalyzer
             InitializeComponent();
         }
 
-        private void bOOKBindingNavigatorSaveItem_Click(object sender, EventArgs e)
-        {
-            this.Validate();
-            this.bOOKBindingSource.EndEdit();
-            this.tableAdapterManager.UpdateAll(this.testDatabaseDataSet);
-
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'testDatabaseDataSet.BOOK' table. You can move, or remove it, as needed.
-            this.bOOKTableAdapter.Fill(this.testDatabaseDataSet.BOOK);
-
-            //Store the first table in the database into a table variable
-            DataTable table = testDatabaseDataSet.Tables[0];
 
             //Call function to find candidate keys
-            findCandidateKey(table);
+            //findCandidateKey(table);
 
             //FIND FUNCTIONAL DEPENDENCIES
             //correlations between columns
@@ -44,6 +33,46 @@ namespace DatabaseAnalyzer
 
 
 
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            //TODO: Add file type error checking to the file selection processs by only allowing users to select .mdb files
+
+            //When button is clicked open window that allows user to select a file
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //From the file dialog, grab the file name and path
+                txtPath.Text = fileDialog.FileName;
+                string nameFile = fileDialog.SafeFileName;
+                string[] names = nameFile.Split('.');
+                string newName = names[0];
+
+                //Show a popup with the name of the file
+                MessageBox.Show(nameFile);
+
+                //If a file is selected (text is showing), read the database into the program
+                if (txtPath.Text != "")
+                {
+                    readDatabase(newName, txtPath.Text);
+                }
+            }
+        }
+        private void readDatabase (string name, string path)
+        {
+            //Connect to the database and read the database
+            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path;
+            string query = "select * from " + name;
+            OleDbConnection connection = new OleDbConnection(connectionString);
+            OleDbCommand command = new OleDbCommand(query, connection);
+            connection.Open();
+            OleDbDataReader reader = command.ExecuteReader();
+
+            //Store the read database table in a datatable variable and assign it to the grid view
+            DataTable dataTable = new DataTable();
+            dataTable.Load(reader);
+            dataGridView.DataSource = dataTable.DefaultView;
         }
         private void findCandidateKey(DataTable t)
         {
