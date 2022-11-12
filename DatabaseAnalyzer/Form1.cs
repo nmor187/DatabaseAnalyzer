@@ -18,6 +18,9 @@ namespace DatabaseAnalyzer
             InitializeComponent();
         }
 
+        //init the dataTable variable to be used throughout the program
+        DataTable dataTable = new DataTable();
+
         private void Form1_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'testDatabaseDataSet.BOOK' table. You can move, or remove it, as needed.
@@ -70,7 +73,6 @@ namespace DatabaseAnalyzer
             OleDbDataReader reader = command.ExecuteReader();
 
             //Store the read database table in a datatable variable and assign it to the grid view
-            DataTable dataTable = new DataTable();
             dataTable.Load(reader);
             dataGridView.DataSource = dataTable.DefaultView;
         }
@@ -101,15 +103,22 @@ namespace DatabaseAnalyzer
                     }
                     else
                     {
-                        Console.WriteLine(t.Rows[j][i].ToString());
+                        //Console.WriteLine(t.Rows[j][i].ToString());
                         rowItems[j] = currStr;
                     }
                 }
                 if (isCandidateKey == true)
                 {
-                    MessageBox.Show("Column #" + i + " is a candidate key");
+                    MessageBox.Show("" + t.Columns[i].ColumnName + " is a candidate key");
                 }
             }
+        }
+
+        private void btnTemp_Click(object sender, EventArgs e)
+        {
+            //Call the find candidate key function from the find candidate key button
+            //by passing the wide scope dataTable variable in
+            findCandidateKey(dataTable);
         }
     }
 }
