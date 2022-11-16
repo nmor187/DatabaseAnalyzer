@@ -20,13 +20,10 @@ namespace DatabaseAnalyzer
 
         //init the dataTable variable to be used throughout the program
         DataTable dataTable = new DataTable();
-
+        string[] functionalDependencies;
         private void Form1_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'testDatabaseDataSet.BOOK' table. You can move, or remove it, as needed.
-
-            //Call function to find candidate keys
-            //findCandidateKey(table);
 
             //FIND FUNCTIONAL DEPENDENCIES
             //correlations between columns
@@ -110,6 +107,7 @@ namespace DatabaseAnalyzer
                 if (isCandidateKey == true)
                 {
                     MessageBox.Show("" + t.Columns[i].ColumnName + " is a candidate key");
+                    functionalDependencies.Append(t.Columns[i].ColumnName);
                 }
             }
         }
@@ -119,6 +117,41 @@ namespace DatabaseAnalyzer
             //Call the find candidate key function from the find candidate key button
             //by passing the wide scope dataTable variable in
             findCandidateKey(dataTable);
+        }
+
+        private void temp2_Click(object sender, EventArgs e)
+        {
+            int numCol = dataTable.Columns.Count;
+            int numRow = dataTable.Rows.Count;
+            DataTable t = dataTable;
+            //for each column, go through and compare it to all the other columns
+            //if items in the selected column are the same, then the compared columns must also be the same for those items
+            //NEED TO ADAPT THIS LOGIC TO WORK FOR FUNCTIONAL DEPENDENCY
+            for (int i = 0; i < numCol; i++)
+            {
+                string[] rowItems = new string[numRow];
+                bool isCandidateKey = true;
+                for (int j = 0; j < numRow; j++)
+                {
+                    //Check if the item in this row is already in the array
+                    string currStr = t.Rows[j][i].ToString();
+                    if (rowItems.Contains(currStr) == true)
+                    {
+                        isCandidateKey = false;
+                        break;
+                    }
+                    else
+                    {
+                        //Console.WriteLine(t.Rows[j][i].ToString());
+                        rowItems[j] = currStr;
+                    }
+                }
+                if (isCandidateKey == true)
+                {
+                    MessageBox.Show("" + t.Columns[i].ColumnName + " is a candidate key");
+                    functionalDependencies.Append(t.Columns[i].ColumnName);
+                }
+            }
         }
     }
 }
